@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.book.dao.LendReturnListMapper">
+    <resultMap id="BaseResultMap" type="com.cy.book.entity.LendReturnList">
+        <id column="lend_return_id" property="lendReturnId"/>
+        <result column="book_id" property="bookId"/>
+        <result column="user_id" property="userId"/>
+        <result column="lend_date" property="lendDate"/>
+        <result column="should_lend_days" property="shouldLendDays"/>
+        <result column="should_return_date" property="shouldReturnDate"/>
+        <result column="return_date" property="returnDate"/>
+        <result column="is_damage" property="isDamage"/>
+        <result column="damage_degree" property="damageDegree"/>
+        <result column="damage_note" property="damageNote"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    lend_return_id, book_id, user_id, lend_date, should_lend_days, should_return_date, 
+    return_date, is_damage, damage_degree, damage_note
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from lend_return_list
+        where lend_return_id = #{lendReturnId}
+    </select>
+
+    <delete id="deleteByPrimaryKey">
+    delete from lend_return_list
+    where lend_return_id = #{lendReturnId}
+  </delete>
+    <insert id="insert">
+    insert into lend_return_list (lend_return_id, book_id, user_id, 
+      lend_date, should_lend_days, should_return_date, 
+      return_date, is_damage, damage_degree, 
+      damage_note)
+    values (#{lendReturnId}, #{bookId}, #{userId}, 
+      #{lendDate}, #{shouldLendDays}, #{shouldReturnDate}, 
+      #{returnDate}, #{isDamage}, #{damageDegree}, 
+      #{damageNote})
+  </insert>
+    <insert id="insertSelective">
+        insert into lend_return_list
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="lendReturnId != null">
+                lend_return_id,
+            </if>
+            <if test="bookId != null">
+                book_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="lendDate != null">
+                lend_date,
+            </if>
+            <if test="shouldLendDays != null">
+                should_lend_days,
+            </if>
+            <if test="shouldReturnDate != null">
+                should_return_date,
+            </if>
+            <if test="returnDate != null">
+                return_date,
+            </if>
+            <if test="isDamage != null">
+                is_damage,
+            </if>
+            <if test="damageDegree != null">
+                damage_degree,
+            </if>
+            <if test="damageNote != null">
+                damage_note,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="lendReturnId != null">
+                #{lendReturnId},
+            </if>
+            <if test="bookId != null">
+                #{bookId},
+            </if>
+            <if test="userId != null">
+                #{userId},
+            </if>
+            <if test="lendDate != null">
+                #{lendDate},
+            </if>
+            <if test="shouldLendDays != null">
+                #{shouldLendDays},
+            </if>
+            <if test="shouldReturnDate != null">
+                #{shouldReturnDate},
+            </if>
+            <if test="returnDate != null">
+                #{returnDate},
+            </if>
+            <if test="isDamage != null">
+                #{isDamage},
+            </if>
+            <if test="damageDegree != null">
+                #{damageDegree},
+            </if>
+            <if test="damageNote != null">
+                #{damageNote},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective">
+        update lend_return_list
+        <set>
+            <if test="bookId != null">
+                book_id = #{bookId},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="lendDate != null">
+                lend_date = #{lendDate},
+            </if>
+            <if test="shouldLendDays != null">
+                should_lend_days = #{shouldLendDays},
+            </if>
+            <if test="shouldReturnDate != null">
+                should_return_date = #{shouldReturnDate},
+            </if>
+            <if test="returnDate != null">
+                return_date = #{returnDate},
+            </if>
+            <if test="isDamage != null">
+                is_damage = #{isDamage},
+            </if>
+            <if test="damageDegree != null">
+                damage_degree = #{damageDegree},
+            </if>
+            <if test="damageNote != null">
+                damage_note = #{damageNote},
+            </if>
+        </set>
+        where lend_return_id = #{lendReturnId}
+    </update>
+    <update id="updateByPrimaryKey">
+    update lend_return_list
+    set book_id = #{bookId},
+      user_id = #{userId},
+      lend_date = #{lendDate},
+      should_lend_days = #{shouldLendDays},
+      should_return_date = #{shouldReturnDate},
+      return_date = #{returnDate},
+      is_damage = #{isDamage},
+      damage_degree = #{damageDegree},
+      damage_note = #{damageNote}
+    where lend_return_id = #{lendReturnId}
+  </update>
+
+
+    <select id="selectBookInfoAndUserByBookId" resultType="com.cy.book.entity.LendReturnList">
+    SELECT
+        book_name "bookInfo.bookName",
+        book_state "bookInfo.bookState",
+        l.user_id userId,
+        lend_return_id lendReturnId,
+        user_true_name "user.userTrueName",
+        lend_date lendDate,
+        should_return_date shouldReturnDate
+    FROM
+        lend_return_list l,
+        book_info b,
+	    user u
+    WHERE
+        l.book_id = b.book_id
+        AND l.user_id = u.user_id
+        AND l.book_id=#{bookId}
+        AND return_date is null
+  </select>
+    <select id="selectLendReturnRecordByUserId" resultType="com.cy.book.entity.LendReturnList">
+        SELECT
+        book_name "bookInfo.bookName",
+        lend_date lendDate,
+        return_date returnDate,
+        should_return_date shouldReturnDate,
+        damage_degree damageDegree
+        FROM
+        lend_return_list,book_info
+        WHERE
+        lend_return_list.book_id=book_info.book_id
+        AND
+        user_id=#{userId}
+        <if test="start!=null and size!=null">
+            limit #{start}, #{size}
+        </if>
+    </select>
+    <select id="getTotalRecord" resultType="java.lang.Integer">
+        select count(*) from lend_return_list
+        where user_id=#{userId}
+    </select>
+</mapper>

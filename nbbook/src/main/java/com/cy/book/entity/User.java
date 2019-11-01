@@ -1,0 +1,35 @@
+package com.cy.book.entity;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
+
+import java.util.Date;
+
+/**
+ * @Description: UserModel
+ */
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+
+public class User {
+
+
+    private Long userId;
+    private String userName;
+    private String userTrueName;
+    private String userPassword;
+    private String userEmail;
+    private String userPhone;
+    private Integer userState;  //约定 1：正常状态  0：禁用状态   默认正常
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date userCreateTime;
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date userLastModifyTime;
+    //不对应数据库字段
+    private String roles;
+
+
+}

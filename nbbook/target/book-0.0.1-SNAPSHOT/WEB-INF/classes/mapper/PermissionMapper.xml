@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.book.dao.PermissionMapper">
+	<resultMap id="BaseResultMap"
+		type="com.cy.book.entity.Permission">
+		<id column="permission_id" property="permissionId" />
+		<result column="permission_name" property="permissionName" />
+		<result column="permission_url" property="permissionUrl" />
+		<result column="permission_parent_id"
+			property="permissionParentId" />
+		<result column="permission_icon" property="permissionIcon" />
+		<result column="permission_create_time"
+			property="permissionCreateTime" />
+		<result column="permission_last_modify_time"
+			property="permissionLastModifyTime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		permission_id, permission_name, permission_url, permission_parent_id,
+		permission_icon,
+		permission_create_time, permission_last_modify_time
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from permission
+		where permission_id = #{permissionId}
+	</select>
+	<delete id="deleteByPrimaryKey">
+		delete from permission
+		where permission_id = #{permissionId}
+	</delete>
+
+	<insert id="insert">
+		insert into permission (permission_id, permission_name, permission_url,
+		permission_parent_id, permission_icon, permission_create_time,
+		permission_last_modify_time)
+		values (#{permissionId}, #{permissionName}, #{permissionUrl},
+		#{permissionParentId}, #{permissionIcon}, #{permissionCreateTime},
+		#{permissionLastModifyTime})
+	</insert>
+	<insert id="insertSelective">
+		insert into permission
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="permissionId != null">
+				permission_id,
+			</if>
+			<if test="permissionName != null">
+				permission_name,
+			</if>
+			<if test="permissionUrl != null">
+				permission_url,
+			</if>
+			<if test="permissionParentId != null">
+				permission_parent_id,
+			</if>
+			<if test="permissionIcon != null">
+				permission_icon,
+			</if>
+			<if test="permissionCreateTime != null">
+				permission_create_time,
+			</if>
+			<if test="permissionLastModifyTime != null">
+				permission_last_modify_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="permissionId != null">
+				#{permissionId},
+			</if>
+			<if test="permissionName != null">
+				#{permissionName},
+			</if>
+			<if test="permissionUrl != null">
+				#{permissionUrl},
+			</if>
+			<if test="permissionParentId != null">
+				#{permissionParentId},
+			</if>
+			<if test="permissionIcon != null">
+				#{permissionIcon},
+			</if>
+			<if test="permissionCreateTime != null">
+				#{permissionCreateTime},
+			</if>
+			<if test="permissionLastModifyTime != null">
+				#{permissionLastModifyTime},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective">
+		update permission
+		<set>
+			<if test="permissionName != null">
+				permission_name = #{permissionName},
+			</if>
+			<if test="permissionUrl != null">
+				permission_url = #{permissionUrl},
+			</if>
+			<if test="permissionParentId != null">
+				permission_parent_id = #{permissionParentId},
+			</if>
+			<if test="permissionIcon != null">
+				permission_icon = #{permissionIcon},
+			</if>
+			<if test="permissionCreateTime != null">
+				permission_create_time = #{permissionCreateTime},
+			</if>
+			<if test="permissionLastModifyTime != null">
+				permission_last_modify_time = #{permissionLastModifyTime},
+			</if>
+		</set>
+		where permission_id = #{permissionId}
+	</update>
+	<update id="updateByPrimaryKey">
+		update permission
+		set permission_name = #{permissionName},
+		permission_url = #{permissionUrl},
+		permission_parent_id = #{permissionParentId},
+		permission_icon = #{permissionIcon},
+		permission_create_time = #{permissionCreateTime},
+		permission_last_modify_time = #{permissionLastModifyTime}
+		where permission_id = #{permissionId}
+	</update>
+
+
+	<select id="queryPermissionsByUser" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from permission
+		where permission_id in (
+		select
+		permission_id
+		from role_permission
+		where role_id in (
+		select
+		role_id
+		from role_user
+		where user_id = #{userId}
+		)
+		)
+	</select>
+
+	<select id="queryAll" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from permission
+	</select>
+
+	<delete id="deleteRolePermissionRsByRoleId">
+		delete from role_permission
+		where role_id=#{roleId}
+	</delete>
+
+	<select id="queryPermissionIdsByRoleId"
+		resultType="java.lang.Integer">
+		select permission_id
+		from role_permission
+		where role_id = #{roleId}
+	</select>
+</mapper>

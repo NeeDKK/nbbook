@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.book.dao.RoleMapper">
+	<resultMap id="BaseResultMap" type="com.cy.book.entity.Role">
+		<id column="role_id" property="roleId" />
+		<result column="role_name" property="roleName" />
+		<result column="role_create_time" property="roleCreateTime" />
+		<result column="role_last_modify_time"
+			property="roleLastModifyTime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		role_id,
+		role_name,
+		role_create_time,
+		role_last_modify_time
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from role
+		where role_id = #{roleId}
+	</select>
+	<select id="countByRoleName" resultType="java.lang.Integer">
+		select count(1)
+		from role
+		where role_name=#{roleName}
+		<if test="roleId != null">
+			AND role_id != #{roleId}
+		</if>
+	</select>
+
+	<delete id="deleteByPrimaryKey">
+		delete
+		from role
+		where role_id = #{roleId}
+	</delete>
+
+
+	<insert id="insertSelective">
+		insert into role
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="roleId != null">
+				role_id,
+			</if>
+			<if test="roleName != null">
+				role_name,
+			</if>
+			role_create_time,
+			role_last_modify_time,
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="roleId != null">
+				#{roleId},
+			</if>
+			<if test="roleName != null">
+				#{roleName},
+			</if>
+			now(),
+			now()
+		</trim>
+	</insert>
+
+	<update id="updateByPrimaryKeySelective">
+		update role
+		<set>
+			<if test="roleName != null">
+				role_name = #{roleName},
+			</if>
+			<if test="roleCreateTime != null">
+				role_create_time = #{roleCreateTime},
+			</if>
+			role_last_modify_time = now(),
+		</set>
+		where role_id = #{roleId}
+	</update>
+
+
+	<delete id="deleteRoleUserRsByUserId">
+		delete
+		from role_user
+		where user_id = #{userId}
+	</delete>
+	<delete id="deleteRoleUserRsByRoleId">
+		delete
+		from role_user
+		where role_id = #{roleId}
+	</delete>
+
+	<select id="selectRoleList" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from role
+		<where>
+			<if test="roleName != null and roleName != ''">
+				role_name like #{roleName}
+			</if>
+		</where>
+		<if test="start!=null and size!=null">
+			limit #{start}, #{size}
+		</if>
+
+	</select>
+
+	<select id="getTotalRole" resultType="java.lang.Integer">
+		select count(*)
+		from role
+		<where>
+			<if test="roleName != null and roleName != ''">
+				role_name like #{roleName}
+			</if>
+		</where>
+	</select>
+
+	<select id="findByUserId" resultMap="BaseResultMap">
+
+		select r.role_name
+		from user u,role r ,role_user ur
+		where ur.user_id = u.user_id
+		and ur.role_id = r.role_id
+		and u.user_id =#{userId}
+	</select>
+
+	<insert id="insertRolePermissions">
+		insert into role_permission ( role_id, permission_id ) values
+		<foreach collection="permissionIds" item="permissionId"
+			separator=",">
+			( #{roleId}, #{permissionId} )
+		</foreach>
+	</insert>
+</mapper>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.book.dao.BookTypeMapper" >
+  <resultMap id="BaseResultMap" type="com.cy.book.entity.BookType" >
+    <id column="book_type_id" property="bookTypeId"/>
+    <result column="book_type_name" property="bookTypeName"/>
+    <result column="book_type_parent_id" property="bookTypeParentId"/>
+    <result column="book_type_create_time" property="bookTypeCreateTime"/>
+    <result column="book_type_last_modify_time" property="bookTypeLastModifyTime"/>
+    <result column="book_type_note" property="bookTypeNote"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    book_type_id, book_type_name, book_type_parent_id, book_type_create_time, book_type_last_modify_time,
+    book_type_note
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from book_type
+    where book_type_id = #{bookTypeId}
+  </select>
+
+    <delete id="deleteByPrimaryKey">
+    delete from book_type
+    where book_type_id = #{bookTypeId}
+  </delete>
+
+  <insert id="insertSelective">
+    insert into book_type
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="bookTypeId != null" >
+        book_type_id,
+      </if>
+      <if test="bookTypeName != null" >
+        book_type_name,
+      </if>
+      <if test="bookTypeParentId != null" >
+        book_type_parent_id,
+      </if>
+        book_type_create_time,
+        book_type_last_modify_time,
+      <if test="bookTypeNote != null" >
+        book_type_note,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="bookTypeId != null" >
+        #{bookTypeId},
+      </if>
+      <if test="bookTypeName != null" >
+        #{bookTypeName},
+      </if>
+      <if test="bookTypeParentId != null" >
+        #{bookTypeParentId},
+      </if>
+      now(),
+      now(),
+      <if test="bookTypeNote != null" >
+        #{bookTypeNote},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective">
+    update book_type
+    <set >
+      <if test="bookTypeName != null" >
+        book_type_name = #{bookTypeName},
+      </if>
+      <if test="bookTypeParentId != null" >
+        book_type_parent_id = #{bookTypeParentId},
+      </if>
+      <if test="bookTypeCreateTime != null" >
+        book_type_create_time = #{bookTypeCreateTime},
+      </if>
+        book_type_last_modify_time = now(),
+      <if test="bookTypeNote != null" >
+        book_type_note = #{bookTypeNote},
+      </if>
+    </set>
+    where book_type_id = #{bookTypeId}
+  </update>
+
+
+
+  <select id="queryAllBookType" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from book_type
+  </select>
+    <select id="selectBookTypeListByBookTypeId" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from book_type
+      where book_type_id = #{bookTypeId}
+    </select>
+
+  <select id="countByBookTypeName" resultType="java.lang.Integer">
+    select count(1)
+    from book_type
+    where  book_type_name = #{bookTypeName}
+    <if test="bookTypeId != null">
+      AND book_type_id != #{bookTypeId}
+    </if>
+  </select>
+</mapper>

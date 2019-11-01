@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.book.dao.BookInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.cy.book.entity.BookInfo" >
+    <id column="book_id" property="bookId"/>
+    <result column="book_isbn" property="bookIsbn"/>
+    <result column="book_name" property="bookName"/>
+    <result column="book_author" property="bookAuthor"/>
+    <result column="book_publish" property="bookPublish"/>
+    <result column="book_price" property="bookPrice"/>
+    <result column="book_state" property="bookState"/>
+    <result column="book_type" property="bookType"/>
+    <result column="book_shelf" property="bookShelf"/>
+    <result column="book_create_time" property="bookCreateTime"/>
+    <result column="book_last_modify_time" property="bookLastModifyTime"/>
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.cy.book.entity.BookInfo" extends="BaseResultMap" >
+    <result column="book_introduction" property="bookIntroduction"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    book_id, book_isbn, book_name, book_author, book_publish, book_price,  book_state,
+    book_type, book_shelf, book_create_time, book_last_modify_time
+  </sql>
+  <sql id="Blob_Column_List" >
+    book_introduction
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />,
+    <include refid="Blob_Column_List" />
+    from book_info
+    where book_id = #{bookId}
+  </select>
+
+    <delete id="deleteByPrimaryKey">
+    delete from book_info
+    where book_id = #{bookId,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insertSelective">
+    insert into book_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="bookId != null" >
+        book_id,
+      </if>
+      <if test="bookIsbn != null" >
+        book_isbn,
+      </if>
+      <if test="bookName != null" >
+        book_name,
+      </if>
+      <if test="bookAuthor != null" >
+        book_author,
+      </if>
+      <if test="bookPublish != null" >
+        book_publish,
+      </if>
+      <if test="bookPrice != null" >
+        book_price,
+      </if>
+      <if test="bookState != null" >
+        book_state,
+      </if>
+      <if test="bookType != null" >
+        book_type,
+      </if>
+      <if test="bookShelf != null" >
+        book_shelf,
+      </if>
+        book_create_time,
+        book_last_modify_time,
+      <if test="bookIntroduction != null" >
+        book_introduction,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="bookId != null" >
+        #{bookId},
+      </if>
+      <if test="bookIsbn != null" >
+        #{bookIsbn},
+      </if>
+      <if test="bookName != null" >
+        #{bookName},
+      </if>
+      <if test="bookAuthor != null" >
+        #{bookAuthor},
+      </if>
+      <if test="bookPublish != null" >
+        #{bookPublish},
+      </if>
+      <if test="bookPrice != null" >
+        #{bookPrice},
+      </if>
+      <if test="bookState != null" >
+        #{bookState},
+      </if>
+      <if test="bookType != null" >
+        #{bookType},
+      </if>
+      <if test="bookShelf != null" >
+        #{bookShelf},
+      </if>
+      now(),
+      now(),
+      <if test="bookIntroduction != null" >
+        #{bookIntroduction},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective">
+    update book_info
+    <set >
+      <if test="bookIsbn != null" >
+        book_isbn = #{bookIsbn},
+      </if>
+      <if test="bookName != null" >
+        book_name = #{bookName},
+      </if>
+      <if test="bookAuthor != null" >
+        book_author = #{bookAuthor},
+      </if>
+      <if test="bookPublish != null" >
+        book_publish = #{bookPublish},
+      </if>
+      <if test="bookPrice != null" >
+        book_price = #{bookPrice},
+      </if>
+      <if test="bookState != null" >
+        book_state = #{bookState},
+      </if>
+      <if test="bookType != null" >
+        book_type = #{bookType},
+      </if>
+      <if test="bookShelf != null" >
+        book_shelf = #{bookShelf},
+      </if>
+      <if test="bookCreateTime != null" >
+        book_create_time = #{bookCreateTime},
+      </if>
+        book_last_modify_time = now(),
+      <if test="bookIntroduction != null" >
+        book_introduction = #{bookIntroduction},
+      </if>
+    </set>
+    where book_id = #{bookId}
+  </update>
+
+  <select id="selectBookInfoList" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />,
+    <include refid="Blob_Column_List" />
+    from book_info
+    <where>
+      <if test="bookIsbn != null and bookIsbn != ''">
+        book_isbn like #{bookIsbn}
+      </if>
+      <if test="bookName != null and bookName != ''">
+        and book_name like #{bookName}
+      </if>
+      <if test="bookAuthor != null and bookAuthor != ''">
+        and book_author like #{bookAuthor}
+      </if>
+    </where>
+    <if test="start!=null and size!=null">
+      limit #{start}, #{size}
+    </if>
+  </select>
+  <select id="getTotalBook" resultType="java.lang.Integer">
+    select count(*) from book_info
+    <where>
+      <if test="bookIsbn != null and bookIsbn != ''">
+        book_isbn like #{bookIsbn}
+      </if>
+      <if test="bookName != null and bookName != ''">
+        and book_name like #{bookName}
+      </if>
+      <if test="bookAuthor != null and bookAuthor != ''">
+        and book_author like #{bookAuthor}
+      </if>
+    </where>
+  </select>
+    <select id="selectBookById" resultMap="ResultMapWithBLOBs">
+      select
+      <include refid="Base_Column_List" />,
+      <include refid="Blob_Column_List" />
+      from book_info
+      where book_id = #{bookId}
+    </select>
+</mapper>

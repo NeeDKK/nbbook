@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.book.dao.UserMapper">
+	<resultMap id="BaseResultMap" type="com.cy.book.entity.User">
+		<id column="user_id" property="userId" />
+		<result column="user_name" property="userName" />
+		<result column="user_true_name" property="userTrueName" />
+		<result column="user_password" property="userPassword" />
+		<result column="user_email" property="userEmail" />
+		<result column="user_phone" property="userPhone" />
+		<result column="user_state" property="userState" />
+		<result column="user_create_time" property="userCreateTime" />
+		<result column="user_last_modify_time"
+			property="userLastModifyTime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		user_id, user_name,user_true_name, user_password, user_email, user_phone,
+		user_state, user_create_time,
+		user_last_modify_time
+	</sql>
+	<sql id="UserList_Column_List">
+		user_id, user_name, user_true_name,user_email, user_phone, user_state,
+		user_create_time,
+		user_last_modify_time
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user
+		where user_id = #{userId}
+	</select>
+	<delete id="deleteByPrimaryKey">
+		delete from user
+		where user_id = #{userId}
+	</delete>
+
+	<insert id="insertSelective">
+		insert into user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userId != null">
+				user_id,
+			</if>
+			<if test="userName != null">
+				user_name,
+			</if>
+			<if test="userTrueName != null">
+				user_true_name,
+			</if>
+			<if test="userPassword != null">
+				user_password,
+			</if>
+			<if test="userEmail != null">
+				user_email,
+			</if>
+			<if test="userPhone != null">
+				user_phone,
+			</if>
+			user_create_time,
+
+			user_last_modify_time,
+
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userId != null">
+				#{userId},
+			</if>
+			<if test="userName != null">
+				#{userName},
+			</if>
+			<if test="userTrueName != null">
+				#{userTrueName},
+			</if>
+			<if test="userPassword != null">
+				#{userPassword},
+			</if>
+			<if test="userEmail != null">
+				#{userEmail},
+			</if>
+			<if test="userPhone != null">
+				#{userPhone},
+			</if>
+			now(),
+			now()
+		</trim>
+	</insert>
+
+	<update id="updateByPrimaryKeySelective">
+		update user
+		<set>
+			<if test="userName != null">
+				user_name = #{userName},
+			</if>
+			<if test="userTrueName != null">
+				user_true_name = #{userTrueName},
+			</if>
+			<if test="userPassword != null">
+				user_password = #{userPassword},
+			</if>
+			<if test="userEmail != null">
+				user_email = #{userEmail},
+			</if>
+			<if test="userPhone != null">
+				user_phone = #{userPhone},
+			</if>
+			<if test="userState != null">
+				user_state = #{userState},
+			</if>
+			<if test="userCreateTime != null">
+				user_create_time = #{userCreateTime},
+			</if>
+			user_last_modify_time = now(),
+		</set>
+		where user_id = #{userId}
+	</update>
+
+
+	<select id="selectByUserName" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user
+		where user_name = #{userName}
+	</select>
+
+
+	<select id="selectUserList" resultMap="BaseResultMap">
+		select
+		<include refid="UserList_Column_List" />
+		from user
+		<where>
+			<if test="userName != null and userName != ''">
+				user_name like #{userName}
+			</if>
+			<if test="userTrueName != null and userTrueName != ''">
+				and user_true_name like #{userTrueName}
+			</if>
+			<if test="userEmail != null and userEmail != ''">
+				and user_email like #{userEmail}
+			</if>
+			<if test="userPhone != null and userPhone != ''">
+				and user_phone like #{userPhone}
+			</if>
+		</where>
+		<if test="start!=null and size!=null">
+			limit #{start}, #{size}
+		</if>
+	</select>
+
+	<select id="getTotalUser" resultType="java.lang.Integer">
+		select count(*) from user
+		<where>
+			<if test="userName != null and userName != ''">
+				user_name like #{userName}
+			</if>
+			<if test="userTrueName != null and userTrueName != ''">
+				and user_true_name like #{userTrueName}
+			</if>
+			<if test="userEmail != null and userEmail != ''">
+				and user_email like #{userEmail}
+			</if>
+			<if test="userPhone != null and userPhone != ''">
+				and user_phone like #{userPhone}
+			</if>
+		</where>
+	</select>
+	<select id="countByMail" resultType="java.lang.Integer">
+		select count(1)
+		from user
+		where user_email=#{userEmail}
+		<if test="userId != null">
+			AND user_id != #{userId}
+		</if>
+	</select>
+	<select id="countByPhone" resultType="java.lang.Integer">
+		select count(1)
+		from user
+		where user_phone=#{userPhone}
+		<if test="userId != null">
+			AND user_id != #{userId}
+		</if>
+	</select>
+	<select id="countByName" resultType="java.lang.Integer">
+		select count(1)
+		from user
+		where user_name=#{userName}
+		<if test="userId != null">
+			AND user_id != #{userId}
+		</if>
+	</select>
+	<select id="countByUserId" resultType="java.lang.Integer">
+		select count(1)
+		from user
+		where user_id=#{userId}
+	</select>
+	<select id="countByUserTrueName" resultType="java.lang.Integer">
+		select count(1)
+		from user
+		where user_true_name=#{userTrueName}
+		<if test="userId != null">
+			AND user_id != #{userId}
+		</if>
+	</select>
+
+
+	<insert id="insertUserRoles" parameterType="Map">
+		insert into role_user ( user_id, role_id ) values
+		<foreach collection="roleIds" item="roleId" separator=",">
+			( #{userId}, #{roleId} )
+		</foreach>
+	</insert>
+</mapper>
